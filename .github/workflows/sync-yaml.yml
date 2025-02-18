@@ -58,7 +58,7 @@ jobs:
           fi
 
           git commit -m "Sync YAML files from A to B"
-          git push origin "$branch_name"
+          git push origin "$branch_name" -f
 
       # Step 7: Create a pull request
       - name: Create Pull Request

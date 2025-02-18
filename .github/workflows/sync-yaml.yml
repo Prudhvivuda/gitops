@@ -29,11 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml
 
-      # Step 4: Run Python script to transform YAML files
-      - name: Run Python script
-        run: python scripts/sync_yaml.py
-
-      # Step 5: Create a new branch and commit changes
+      # Step 4: Create and check out to a new branch
       - name: Create new branch and commit changes
         run: |
           branch_name="sync-yaml-$(uuidgen | tr '[:upper:]' '[:lower:]')"
@@ -42,6 +38,14 @@ jobs:
           git checkout -b "$branch_name"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Step 5: Run Python script to transform YAML files
+      - name: Run Python script
+        run: python scripts/sync_yaml.py
+
+      # Step 6: Create a new branch and commit changes
+      - name: Commit changes
+        run: |
           git add B/
 
           # Check if there are any changes before committing
@@ -53,11 +57,11 @@ jobs:
           git commit -m "Sync YAML files from A to B"
           git push origin "$branch_name"
 
-      # Step 6: Create a pull request
+      # Step 7: Create a pull request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           title: "Sync YAML changes from A to B"
           body: "Automated PR to sync YAML files from folder A to folder B."
-          branch: "$branch_name"
+          branch: $${{ env.branch_name }}
           base: main

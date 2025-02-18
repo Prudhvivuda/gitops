@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   sync-yaml:
@@ -16,7 +15,7 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       # Step 2: Set up Python
       - name: Set up Python
@@ -30,43 +29,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml
 
-      # Step 4: Create and check out to a new branch
-      - name: Create new branch and commit changes
-        run: |
-          # branch_name="sync-yaml-$(uuidgen | tr '[:upper:]' '[:lower:]')"
-          branch_name="sync-yaml-$(date +%s)"
-          echo "branch_name=$branch_name" >> $GITHUB_ENV
-
-          git checkout -b "$branch_name"
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git pull --rebase origin main
-
-      # Step 5: Run Python script to transform YAML files
+      # Step 4: Run Python script to transform YAML files
       - name: Run Python script
         run: python scripts/sync_yaml.py
 
-      # Step 6: Create a new branch and commit changes
-      - name: Commit changes
-        run: |
-          git add .
-          # git add B/
-
-          # Check if there are any changes before committing
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-
-          git commit -m "Sync YAML files from A to B"
-          git push origin "$branch_name" -f
-
-      # Step 7: Create a pull request
+      # Step 5: Create a pull request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
           title: "Sync YAML changes from A to B"
           body: "Automated PR to sync YAML files from folder A to folder B."
-          branch: ${{ env.branch_name }}
+          branch: "test"
           base: main
+          commit-message: "updated B's config!"
+    

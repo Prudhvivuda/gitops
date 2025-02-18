@@ -42,7 +42,8 @@ jobs:
         with:
           title: "Sync YAML changes from A to B"
           body: "Automated PR to sync YAML files from folder A to folder B."
-          branch: "test"
+          # branch: "test"
+          branch: ${{ steps.create-branch.outputs.branch_name }} 
           base: main
           commit-message: "updated B's config!"
     

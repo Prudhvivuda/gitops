@@ -37,6 +37,8 @@ jobs:
       # Step 5: Create a pull request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
         with:
           title: "Sync YAML changes from A to B"
           body: "Automated PR to sync YAML files from folder A to folder B."

@@ -16,7 +16,7 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Set up Python
       - name: Set up Python
@@ -64,7 +64,7 @@ jobs:
 
       # Step 7: Create a pull request
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           title: "Sync YAML changes from A to B"
           body: "Automated PR to sync YAML files from folder A to folder B."

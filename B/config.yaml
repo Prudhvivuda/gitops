@@ -1,0 +1,12 @@
+dev:
+  name: "dev-example"
+  environment: "development"
+  region: "us-west-1"
+stage:
+  name: "stage-example"
+  environment: "staging"
+  region: "eu-central-1"
+prod:
+  name: "prod-example"
+  environment: "production"
+  region: "ap-south-1"

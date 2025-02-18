@@ -1,4 +1,4 @@
 name: Example Workflow
 environment: dev
-version: 1.07
+version: 1.08
 region: test-region

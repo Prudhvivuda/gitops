@@ -46,7 +46,8 @@ jobs:
       # Step 6: Create a new branch and commit changes
       - name: Commit changes
         run: |
-          git add B/
+          git add .
+          # git add B/
 
           # Check if there are any changes before committing
           if git diff --cached --quiet; then

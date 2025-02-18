@@ -1,0 +1,4 @@
+environment: development
+name: dev-example
+region: us-west-1
+version: 1.19

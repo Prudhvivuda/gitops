@@ -1,0 +1,11 @@
+source_branch: main
+destination_branch: test
+file:
+  - name: 1.yaml
+    keys:
+      key1: value_x
+      key2: value_y
+  - name: 2.yaml
+    keys:
+      key1: value_a
+      key2: value_b

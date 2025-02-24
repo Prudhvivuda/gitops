@@ -1,55 +1,36 @@
-import yaml
 import os
+import yaml
 
-def sync_yaml_files():
-    # Load config from folder B
-    config_path = 'B/config.yaml'
-    if not os.path.exists(config_path):
-        print("Error: config.yaml not found in B/")
-        return
+A_FOLDER = "A"
+B_FOLDER = "B"
+CONFIG_PATH = "Config/config.yaml"
 
-    with open(config_path, 'r') as config_file:
-        config = yaml.safe_load(config_file)
+def load_yaml(file_path):
+    """Loads a YAML file and returns its contents as a dictionary."""
+    with open(file_path, "r") as file:
+        return yaml.safe_load(file)
 
-    # Ensure output directory exists
-    output_dir = 'B/merged_yaml'
-    os.makedirs(output_dir, exist_ok=True)
+def save_yaml(data, file_path):
+    """Saves a dictionary as a YAML file."""
+    with open(file_path, "w") as file:
+        yaml.dump(data, file, default_flow_style=False)
 
-    # Process each YAML file in folder A
-    for filename in os.listdir('A'):
-        if filename.endswith('.yaml') or filename.endswith('.yml'):
-            file_path = f'A/{filename}'
-            with open(file_path, 'r') as file:
-                data = yaml.safe_load(file)
+def update_files():
+    """Reads config.yaml, updates A folder files, and saves to B folder."""
+    config = load_yaml(CONFIG_PATH)
+    os.makedirs(B_FOLDER, exist_ok=True)
 
-            # Replace values using config.yaml in B
-            env = data.get('environment', 'dev')
-            if env in config:
-                merged_data = merge_yaml(data, config[env])
-            else:
-                print(f"Warning: No config found for environment '{env}' in {filename}. Skipping update.")
-                merged_data = data  # Keep original content
+    for file_info in config.get("file", []):
+        file_name = file_info["name"].strip()
+        file_path_a = os.path.join(A_FOLDER, file_name)
+        file_path_b = os.path.join(B_FOLDER, file_name)
 
-            # Save merged YAML as a new file
-            output_file_path = f'{output_dir}/{filename}'
-            with open(output_file_path, 'w') as output_file:
-                yaml.dump(merged_data, output_file, default_flow_style=False)
-
-            print(f"Merged YAML saved: {output_file_path}")
-
-    print("YAML sync process completed!")
-
-def merge_yaml(original, updates):
-    """
-    Recursively merges `updates` into `original` without overwriting entire dictionaries.
-    """
-    if isinstance(original, dict) and isinstance(updates, dict):
-        for key, value in updates.items():
-            if key in original and isinstance(original[key], dict):
-                original[key] = merge_yaml(original[key], value)
-            else:
-                original[key] = value
-    return original
+        if os.path.exists(file_path_a):
+            data = load_yaml(file_path_a)
+            for key, value in file_info.get("keys", {}).items():
+                if key in data:
+                    data[key] = value  # Override values based on config.yaml
+            save_yaml(data, file_path_b)
 
 if __name__ == "__main__":
-    sync_yaml_files()
+    update_files()

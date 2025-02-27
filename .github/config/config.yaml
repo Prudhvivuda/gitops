@@ -5,7 +5,12 @@ file:
     keys:
       key1: value_x
       key2: value_y
+      key3:
+        key31:
+          key311: value_z
   - name: 2.yaml
     keys:
       key1: value_a
       key2: value_b
+
+

@@ -1,16 +1,13 @@
-tag: v1.0.13
-
 file:
-  - name: 1.yaml
-    keys:
-      key1: value_1x1
-      key2: value_y
-      key3:
-        key31:
-          key311: value_z
-  - name: 2.yaml
-    keys:
-      key1: value_aa
-      key2: value_bb
-
-
+- keys:
+    key1: value_1x1
+    key2: value_y
+    key3:
+      key31:
+        key311: value_z
+  name: 1.yaml
+- keys:
+    key1: value_aa
+    key2: value_bb
+  name: 2.yaml
+tag: v1.0.18

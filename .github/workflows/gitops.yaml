@@ -80,8 +80,10 @@ name: Sync YAML from A to B
 
 on:
   push:
-    paths:
-      - 'A/*.yaml'  # Trigger only when YAML files in A/ change
+    tags:
+      - 'v*'
+    # paths:
+    #   - 'A/*.yaml'  # Trigger only when YAML files in A/ change
 
 permissions:
   contents: write

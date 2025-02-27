@@ -3,7 +3,7 @@ import yaml
 
 A_FOLDER = "A"
 B_FOLDER = "B"
-CONFIG_PATH = "config/config.yaml"
+CONFIG_PATH = ".github/config/config.yaml"
 
 def load_yaml(file_path):
     """Loads a YAML file and returns its contents as a dictionary."""

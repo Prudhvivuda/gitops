@@ -31,7 +31,7 @@ jobs:
 
       # Step 4: Run Python script to transform YAML files
       - name: Run Python script
-        run: python scripts/update_files.py
+        run: python .gitops/scripts/update_files.py
 
       # Step 5: Create a pull request
       - name: Create Pull Request

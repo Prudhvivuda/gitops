@@ -109,6 +109,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml
 
+      # Step 4: Update tag version
+      - name: Update Tag Version
+        run: python .github/scripts/update_tag.py
+
       # Step 4: Run Python script to transform YAML files
       - name: Run Python script
         run: python .github/scripts/update_files.py

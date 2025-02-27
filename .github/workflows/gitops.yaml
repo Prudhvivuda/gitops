@@ -51,14 +51,14 @@ jobs:
           sed -i "s/tag: v${current_version}/tag: v${new_version}/" .github/config/config.yaml
           cat .github/config/config.yaml
 
-      # # Step 7: Commit version update to config.yaml
-      # - name: Commit updated config.yaml
-      #   run: |
-      #     git config --global user.email "youremail@example.com"
-      #     git config --global user.name "Your Name"
-      #     git add .github/config/config.yaml
-      #     git commit -m "Update tag version to v${new_version}"
-      #     git push
+      # Step 7: Commit version update to config.yaml
+      - name: Commit updated config.yaml
+        run: |
+          git config --global user.email prudhvi.vuda@sbdtechs.com
+          git config --global user.name prudhvi-sbdtechs
+          git add .github/config/config.yaml
+          git commit -m "Update tag version to v${new_version}"
+          git push
 
       # Step 8: Create a pull request with tag versioning
       - name: Create Pull Request

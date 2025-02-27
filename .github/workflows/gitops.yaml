@@ -1,61 +1,3 @@
-name: Sync YAML from A to B
-
-on:
-  push:
-    paths:
-      - 'A/*.yaml'  # Trigger only when YAML files in A/ change
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  sync-yaml:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml
-
-      - name: Generate Timestamped Branch Name
-        id: generate_branch
-        run: echo "branch_name=test-$(date +%s)" >> $GITHUB_ENV
-
-      - name: Run Python script to update YAML files
-        run: python .github/scripts/update_files.py
-
-      - name: Commit changes
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git checkout -b ${{ env.branch_name }}
-          git add B/
-          git commit -m "Updated B's config!"
-          git push origin ${{ env.branch_name }}
-
-      - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        with:
-          title: "Sync YAML changes from test to prod"
-          body: "Automated PR to sync YAML files from test to prod."
-          commit-message: "Merged to prod from ${{ env.branch_name }}"
-          branch: ${{ env.branch_name }}
-          base: prod
-          delete-branch: true  # Automatically deletes temp branch after merge
-
-
 # name: Sync YAML from A to B
 
 # on:
@@ -71,34 +13,92 @@ jobs:
 #   sync-yaml:
 #     runs-on: ubuntu-latest
 #     steps:
-#       # Step 1: Checkout the repository
 #       - name: Checkout repository
 #         uses: actions/checkout@v4
 
-#       # Step 2: Set up Python
 #       - name: Set up Python
 #         uses: actions/setup-python@v4
 #         with:
 #           python-version: '3.10'
 
-#       # Step 3: Install dependencies
 #       - name: Install dependencies
 #         run: |
 #           python -m pip install --upgrade pip
 #           pip install pyyaml
 
-#       # Step 4: Run Python script to transform YAML files
-#       - name: Run Python script
+#       - name: Generate Timestamped Branch Name
+#         id: generate_branch
+#         run: echo "branch_name=test-$(date +%s)" >> $GITHUB_ENV
+
+#       - name: Run Python script to update YAML files
 #         run: python .github/scripts/update_files.py
 
-#       # Step 5: Create a pull request
+#       - name: Commit changes
+#         run: |
+#           git config --global user.name "github-actions"
+#           git config --global user.email "github-actions@github.com"
+#           git checkout -b ${{ env.branch_name }}
+#           git add B/
+#           git commit -m "Updated B's config!"
+#           git push origin ${{ env.branch_name }}
+
 #       - name: Create Pull Request
+#         id: create_pr
 #         uses: peter-evans/create-pull-request@v7
 #         env:
-#           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
+#           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 #         with:
-#           title: "Sync YAML changes from A to B"
-#           body: "Automated PR to sync YAML files from folder A to folder B."
-#           commit-message: "Updated B's config!"
-#           branch: "test"
-#           base: main
+#           title: "Sync YAML changes from test to prod"
+#           body: "Automated PR to sync YAML files from test to prod."
+#           commit-message: "Merged to prod from ${{ env.branch_name }}"
+#           branch: ${{ env.branch_name }}
+#           base: prod
+#           delete-branch: true  # Automatically deletes temp branch after merge
+
+
+name: Sync YAML from A to B
+
+on:
+  push:
+    paths:
+      - 'A/*.yaml'  # Trigger only when YAML files in A/ change
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      # Step 4: Run Python script to transform YAML files
+      - name: Run Python script
+        run: python .github/scripts/update_files.py
+
+      # Step 5: Create a pull request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
+        with:
+          title: "Sync YAML changes from A to B"
+          body: "Automated PR to sync YAML files from folder A to folder B."
+          commit-message: "Updated B's config!"
+          branch: "prod"
+          base: main

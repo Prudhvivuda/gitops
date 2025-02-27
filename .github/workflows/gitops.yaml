@@ -16,6 +16,8 @@ jobs:
       # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main  # Explicitly check out the main branch
 
       # Step 2: Set up Python
       - name: Set up Python
@@ -51,25 +53,25 @@ jobs:
           sed -i "s/tag: v${current_version}/tag: v${new_version}/" .github/config/config.yaml
           cat .github/config/config.yaml
 
-      # Step 7: Commit version update to config.yaml
-      - name: Commit updated config.yaml
+      # Step 7: Commit version update
+      - name: Commit version update
         run: |
-          git config --global user.email prudhvi12042001@gmail.com
           git config --global user.name Prudhvivuda
+          git config --global user.email prudhvi12042001@gmail.com
           git add .github/config/config.yaml
-          git commit -m "Update tag version to v${new_version}"
-          git push
+          git commit -m "Incremented version to ${{ env.TAG_NAME }}"
+          git push origin main
 
       # Step 8: Create a pull request with tag versioning
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           title: "Sync config changes from A to B - ${{ env.TAG_NAME }}"
           body: "Automated PR to sync YAML files from folder A to folder B. Version: ${{ env.TAG_NAME }}"
           commit-message: "Updated B's config! Merged to prod from ${{ env.TAG_NAME }}"
-          branch: "prod"
+          branch: "sync-config-${{ env.TAG_NAME }}"
           base: main
 
 ###################################################################

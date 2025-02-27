@@ -1,9 +1,87 @@
+# name: Sync YAML from A to B
+
+# on:
+#   push:
+#     tags:
+#       - 'v*'  # Trigger workflow only when a new tag is pushed
+
+# permissions:
+#   contents: write
+#   pull-requests: write
+
+# jobs:
+#   sync-yaml:
+#     runs-on: ubuntu-latest
+#     steps:
+#       # Step 1: Checkout the repository
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#         with:
+#           ref: main  # Explicitly check out the main branch
+
+#       # Step 2: Set up Python
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.10'
+
+#       # Step 3: Install dependencies
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install pyyaml
+
+#       # Step 4: Run Python script to transform YAML files
+#       - name: Run Python script
+#         run: python .github/scripts/update_files.py
+
+#       # Step 5: Extract tag name
+#       - name: Get Tag Name
+#         id: get_tag
+#         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+#       # Step 6: Increment version and update config.yaml
+#       - name: Increment version in config.yaml
+#         run: |
+#           current_version="${GITHUB_REF#refs/tags/v}"
+#           IFS='.' read -r major minor patch <<< "$current_version"
+#           new_patch=$((patch + 1))  # Increment patch version
+#           new_version="$major.$minor.$new_patch"
+#           echo "New version: $new_version"
+
+#           # Update config.yaml with the new version
+#           sed -i "s/tag: v${current_version}/tag: v${new_version}/" .github/config/config.yaml
+#           cat .github/config/config.yaml
+
+#       # Step 7: Commit version update
+#       - name: Commit version update
+#         run: |
+#           git config --global user.name Prudhvivuda
+#           git config --global user.email prudhvi12042001@gmail.com
+#           git add .github/config/config.yaml
+#           git commit -m "Incremented version to ${{ env.TAG_NAME }}"
+#           git push origin main
+
+#       # Step 8: Create a pull request with tag versioning
+#       - name: Create Pull Request
+#         uses: peter-evans/create-pull-request@v7
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+#         with:
+#           title: "Sync config changes from A to B - ${{ env.TAG_NAME }}"
+#           body: "Automated PR to sync YAML files from folder A to folder B. Version: ${{ env.TAG_NAME }}"
+#           commit-message: "Updated B's config! Merged to prod from ${{ env.TAG_NAME }}"
+#           branch: "sync-config-${{ env.TAG_NAME }}"
+#           base: main
+
+###################################################################
+
 name: Sync YAML from A to B
 
 on:
   push:
-    tags:
-      - 'v*'  # Trigger workflow only when a new tag is pushed
+    paths:
+      - 'A/*.yaml'  # Trigger only when YAML files in A/ change
 
 permissions:
   contents: write
@@ -16,8 +94,6 @@ jobs:
       # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: main  # Explicitly check out the main branch
 
       # Step 2: Set up Python
       - name: Set up Python
@@ -35,12 +111,7 @@ jobs:
       - name: Run Python script
         run: python .github/scripts/update_files.py
 
-      # Step 5: Extract tag name
-      - name: Get Tag Name
-        id: get_tag
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      # Step 6: Increment version and update config.yaml
+      # testing for tags
       - name: Increment version in config.yaml
         run: |
           current_version="${GITHUB_REF#refs/tags/v}"
@@ -53,129 +124,17 @@ jobs:
           sed -i "s/tag: v${current_version}/tag: v${new_version}/" .github/config/config.yaml
           cat .github/config/config.yaml
 
-      # Step 7: Commit version update
-      - name: Commit version update
-        run: |
-          git config --global user.name Prudhvivuda
-          git config --global user.email prudhvi12042001@gmail.com
-          git add .github/config/config.yaml
-          git commit -m "Incremented version to ${{ env.TAG_NAME }}"
-          git push origin main
-
-      # Step 8: Create a pull request with tag versioning
+      # Step 5: Create a pull request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
         with:
-          title: "Sync config changes from A to B - ${{ env.TAG_NAME }}"
-          body: "Automated PR to sync YAML files from folder A to folder B. Version: ${{ env.TAG_NAME }}"
-          commit-message: "Updated B's config! Merged to prod from ${{ env.TAG_NAME }}"
-          branch: "sync-config-${{ env.TAG_NAME }}"
+          title: "Sync YAML changes from A to B"
+          body: "Automated PR to sync YAML files from folder A to folder B."
+          commit-message: "Updated B's config!"
+          branch: "prod"
           base: main
-
-###################################################################
-
-# name: Sync YAML from A to B
-
-# on:
-#   push:
-#     tags:
-#       - 'v*'  # Trigger workflow only when a new tag (e.g., v1.0.0) is pushed
-
-# permissions:
-#   contents: write
-#   pull-requests: write
-
-# jobs:
-#   sync-yaml:
-#     runs-on: ubuntu-latest
-#     steps:
-#       # Step 1: Checkout the repository
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       # Step 2: Set up Python
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-      #     python-version: '3.10'
-
-      # # Step 3: Install dependencies
-      # - name: Install dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install pyyaml
-
-      # # Step 4: Run Python script to transform YAML files
-      # - name: Run Python script
-      #   run: python .github/scripts/update_files.py
-
-      # # Step 5: Extract tag name
-      # - name: Get Tag Name
-      #   id: get_tag
-      #   run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      # # Step 6: Create a pull request with tag versioning
-      # - name: Create Pull Request
-      #   uses: peter-evans/create-pull-request@v7
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
-      #   with:
-      #     title: "Sync YAML changes from A to B - ${{ env.TAG_NAME }}"
-      #     body: "Automated PR to sync YAML files from folder A to folder B. Version: ${{ env.TAG_NAME }}"
-      #     commit-message: "Updated B's config! Merged to prod from ${{ env.TAG_NAME }}"
-      #     branch: "prod"
-      #     base: main
-
-###################################################################
-
-# name: Sync YAML from A to B
-
-# on:
-#   push:
-#     paths:
-#       - 'A/*.yaml'  # Trigger only when YAML files in A/ change
-
-# permissions:
-#   contents: write
-#   pull-requests: write
-
-# jobs:
-#   sync-yaml:
-#     runs-on: ubuntu-latest
-#     steps:
-#       # Step 1: Checkout the repository
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       # Step 2: Set up Python
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.10'
-
-#       # Step 3: Install dependencies
-      # - name: Install dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install pyyaml
-
-      # # Step 4: Run Python script to transform YAML files
-      # - name: Run Python script
-      #   run: python .github/scripts/update_files.py
-
-      # # Step 5: Create a pull request
-      # - name: Create Pull Request
-      #   uses: peter-evans/create-pull-request@v7
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
-      #   with:
-      #     title: "Sync YAML changes from A to B"
-      #     body: "Automated PR to sync YAML files from folder A to folder B."
-      #     commit-message: "Updated B's config!"
-      #     branch: "prod"
-      #     base: main
 
 ###################################################################
 

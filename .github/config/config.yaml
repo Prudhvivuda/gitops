@@ -10,7 +10,7 @@ file:
           key311: value_z
   - name: 2.yaml
     keys:
-      key1: value_a
-      key2: value_b
+      key1: value_aa
+      key2: value_bb
 
 

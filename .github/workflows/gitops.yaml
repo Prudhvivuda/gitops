@@ -126,8 +126,8 @@ jobs:
           title: "Sync YAML changes from A to B"
           body: "Automated PR to sync YAML files from folder A to folder B."
           commit-message: "Updated B's config!"
-          branch: "prod"
-          base: main
+          branch: main
+          base: prod
 
 ###################################################################
 

@@ -113,18 +113,18 @@ jobs:
       - name: Run Python script
         run: python .github/scripts/update_files.py
 
-      # testing for tags
-      - name: Increment version in config.yaml
-        run: |
-          current_version="${GITHUB_REF#refs/tags/v}"
-          IFS='.' read -r major minor patch <<< "$current_version"
-          new_patch=$((patch + 1))  # Increment patch version
-          new_version="$major.$minor.$new_patch"
-          echo "New version: $new_version"
+      # # testing for tags
+      # - name: Increment version in config.yaml
+      #   run: |
+      #     current_version="${GITHUB_REF#refs/tags/v}"
+      #     IFS='.' read -r major minor patch <<< "$current_version"
+      #     new_patch=$((patch + 1))  # Increment patch version
+      #     new_version="$major.$minor.$new_patch"
+      #     echo "New version: $new_version"
 
-          # Update config.yaml with the new version
-          sed -i "s/tag: v${current_version}/tag: v${new_version}/" .github/config/config.yaml
-          cat .github/config/config.yaml
+      #     # Update config.yaml with the new version
+      #     sed -i "s/tag: v${current_version}/tag: v${new_version}/" .github/config/config.yaml
+      #     cat .github/config/config.yaml
 
       # Step 5: Create a pull request
       - name: Create Pull Request

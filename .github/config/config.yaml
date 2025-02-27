@@ -1,5 +1,3 @@
-source_branch: main
-destination_branch: test
 file:
   - name: 1.yaml
     keys:
